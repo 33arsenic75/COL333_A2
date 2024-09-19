@@ -3,7 +3,8 @@ import math
 import random
 import numpy as np
 from helper import *
-
+from typing import Optional, Set, Tuple  # Add this import statement
+from helper import check_win
 
 class AIPlayer:
 
@@ -23,23 +24,33 @@ class AIPlayer:
         self.player_string = 'Player {}: ai'.format(player_number)
         self.timer = timer
 
-    def get_move(self, state: np.array) -> Tuple[int, int]:
+    def get_move(self, state: np.array) -> Tuple[int, int]:        
+        valid_moves = self.get_valid_moves(state)
+        for move in valid_moves:
+            me_win, _ = check_win(state, move, self.player_number)
+            opp_win, _ = check_win(state, move, 3 - self.player_number)
+            if me_win:
+                return move
+            elif opp_win:
+                return move
+
+        return random.choice(valid_moves)
+
+    def get_valid_moves(self, state: np.array) -> List[Tuple[int, int]]:
         """
-        Given the current state of the board, return the next move
+        Get all valid moves for the current state.
 
         # Parameters
-        `state: Tuple[np.array]`
-            - a numpy array containing the state of the board using the following encoding:
-            - the board maintains its same two dimensions
-            - spaces that are unoccupied are marked as 0
-            - spaces that are blocked are marked as 3
-            - spaces that are occupied by player 1 have a 1 in them
-            - spaces that are occupied by player 2 have a 2 in them
+        `state (np.array)`: The current state of the game board
 
         # Returns
-        Tuple[int, int]: action (coordinates of a board cell)
+        `List[Tuple[int, int]]`: A list of valid moves (row, column)
         """
+        valid_moves = []
+        for row in range(state.shape[0]):
+            for col in range(state.shape[1]):
+                if state[row, col] == 0:  # Assuming 0 represents an empty cell
+                    valid_moves.append((row, col))
+        return valid_moves
 
-        # Do the rest of your implementation here
-        raise NotImplementedError('Whoops I don\'t know what to do')
-
+    
