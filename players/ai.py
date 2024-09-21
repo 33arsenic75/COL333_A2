@@ -34,6 +34,11 @@ class AIPlayer:
                 return move
             elif opp_win:
                 return move
+        if state.shape[0] > 10 or state.shape[1] > 10:
+            # Play randomly for the first few moves if the board size is greater than 10
+            if np.count_nonzero(state) < 20:  # Adjust the number of moves as needed
+                return random.choice(self.get_valid_moves(state))
+            
         # return self.random_move(state)
         return self.mcts(state)
 
@@ -126,4 +131,3 @@ class Node:
     
     def __eq__(self, other):
         return isinstance(other, Node) and np.array_equal(self.state, other.state) and self.move == other.move
-

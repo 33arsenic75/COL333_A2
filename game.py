@@ -88,9 +88,9 @@ class Game:
             log_file.write(s)
             log_file.write("Player 1 Type: " + player1.type + '\n')
             log_file.write("Player 2 Type: " + player2.type + '\n')
-            print(s)
-            print("Player 1 Type: " + player1.type)
-            print("Player 2 Type: " + player2.type)
+            # print(s)
+            # print("Player 1 Type: " + player1.type)
+            # print("Player 2 Type: " + player2.type)
 
         if mode == "gui":
             self.use_gui = True
@@ -231,7 +231,7 @@ class Game:
                     log_file.write("Winning Path: " + str(self.winning_path) + '\n')
                     log_file.write("Player 1 Time Remaining: " + str(PLAYER_TIME[0]) + ' s\n')
                     log_file.write("Player 2 Time Remaining: " + str(PLAYER_TIME[1]) + ' s\n')
-                    print(s)
+                    # print(s)
                 break
 
     @staticmethod
@@ -265,8 +265,8 @@ class Game:
                     action = int(action[0]), int(action[1])
                 except Exception as e:
                     uh_oh = 'Uh oh.... something is wrong with Player {}'
-                    print(uh_oh.format(current_player.player_number))
-                    print(e)
+                    # print(uh_oh.format(current_player.player_number))
+                    # print(e)
                     action = TimeLimitExceedAction
             else:
                 pause_timer.value = False
@@ -277,8 +277,8 @@ class Game:
                     game_over.value = True
                     self.winner = 2 - current_turn.value
                     uh_oh = 'Uh oh.... something is wrong with Player {}'
-                    print(uh_oh.format(current_player.player_number))
-                    print(f'Player {2 - current_turn.value} won!\nPlayer {current_turn.value + 1} exceeded time limit!')
+                    # print(uh_oh.format(current_player.player_number))
+                    # print(f'Player {2 - current_turn.value} won!\nPlayer {current_turn.value + 1} exceeded time limit!')
 
             if action == TimeLimitExceedAction:
                 log_action = {'player': current_player.player_number, 'move': 'TLE'}
@@ -297,7 +297,8 @@ class Game:
                     game_over.value = True
                     self.structure_formed = way
                     self.winner = current_player.player_number
-                    print(f"GAME OVER, Player {self.winner} won with a {self.structure_formed}!")
+                    print(self.winner)
+                    # print(f"GAME OVER, Player {self.winner} won with a {self.structure_formed}!")
 
             # Log: Writing action to log file
             with open('logs.txt', 'a') as log_file:
@@ -371,5 +372,6 @@ if __name__ == '__main__':
     parser.add_argument('--dim' ,   type=int, default=4,   help='Dimension of the side of the (hexagonal) board (int)')
     parser.add_argument('--blocks', type=int, default=0,   help='Number of blocked cells in the board (int)')
     parser.add_argument("--start_file", type=str, default=None, help="Custom initial state of the game specified in havannah/initial_states/<filename>")
-    args = parser.parse_args()
+    args = parser.parse_args()    
     main(args.player1, args.player2, args.time, args.dim, args.mode, args.start_file, args.blocks)
+    

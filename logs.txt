@@ -1,59 +1,132 @@
-5
-0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 
-3 0 0 0 0 0 0 0 3 
-3 3 0 0 0 0 0 3 3 
-3 3 3 0 0 0 3 3 3 
-3 3 3 3 0 3 3 3 3 
+12
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 
+3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 
+3 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 
+3 3 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 
+3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 
+3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 
+3 3 3 3 3 3 3 0 0 0 0 0 0 0 0 0 3 3 3 3 3 3 3 
+3 3 3 3 3 3 3 3 0 0 0 0 0 0 0 3 3 3 3 3 3 3 3 
+3 3 3 3 3 3 3 3 3 0 0 0 0 0 3 3 3 3 3 3 3 3 3 
+3 3 3 3 3 3 3 3 3 3 0 0 0 3 3 3 3 3 3 3 3 3 3 
+3 3 3 3 3 3 3 3 3 3 3 0 3 3 3 3 3 3 3 3 3 3 3 
 Player 1 Type: ai
-Player 2 Type: ai
-{"player": 1, "move": [1, 4]}
-{"player": 2, "move": [3, 0]}
-{"player": 1, "move": [4, 3]}
-{"player": 2, "move": [2, 7]}
-{"player": 1, "move": [1, 0]}
-{"player": 2, "move": [5, 4]}
-{"player": 1, "move": [4, 2]}
-{"player": 2, "move": [3, 6]}
-{"player": 1, "move": [4, 4]}
-{"player": 2, "move": [1, 6]}
-{"player": 1, "move": [7, 5]}
-{"player": 2, "move": [0, 3]}
-{"player": 1, "move": [0, 6]}
-{"player": 2, "move": [8, 4]}
-{"player": 1, "move": [5, 1]}
-{"player": 2, "move": [6, 3]}
-{"player": 1, "move": [4, 8]}
-{"player": 2, "move": [3, 8]}
-{"player": 1, "move": [2, 6]}
-{"player": 2, "move": [7, 3]}
-{"player": 1, "move": [2, 4]}
-{"player": 2, "move": [1, 5]}
-{"player": 1, "move": [2, 2]}
-{"player": 2, "move": [0, 0]}
-{"player": 1, "move": [5, 2]}
-{"player": 2, "move": [3, 2]}
-{"player": 1, "move": [2, 1]}
-{"player": 2, "move": [3, 7]}
-{"player": 1, "move": [2, 3]}
-{"player": 2, "move": [6, 2]}
+Player 2 Type: random
 {"player": 1, "move": [4, 5]}
-{"player": 2, "move": [0, 4]}
-{"player": 1, "move": [5, 3]}
-{"player": 2, "move": [4, 0]}
-{"player": 1, "move": [6, 4]}
+{"player": 2, "move": [3, 21]}
+{"player": 1, "move": [7, 8]}
+{"player": 2, "move": [9, 8]}
+{"player": 1, "move": [18, 12]}
+{"player": 2, "move": [12, 8]}
+{"player": 1, "move": [11, 20]}
+{"player": 2, "move": [14, 9]}
+{"player": 1, "move": [4, 18]}
+{"player": 2, "move": [18, 14]}
+{"player": 1, "move": [7, 16]}
+{"player": 2, "move": [14, 12]}
+{"player": 1, "move": [7, 14]}
+{"player": 2, "move": [9, 12]}
+{"player": 1, "move": [20, 9]}
+{"player": 2, "move": [5, 6]}
+{"player": 1, "move": [7, 7]}
+{"player": 2, "move": [3, 9]}
+{"player": 1, "move": [2, 16]}
+{"player": 2, "move": [9, 19]}
+{"player": 1, "move": [12, 20]}
+{"player": 2, "move": [3, 10]}
+{"player": 1, "move": [13, 6]}
+{"player": 2, "move": [10, 8]}
+{"player": 1, "move": [18, 9]}
+{"player": 2, "move": [1, 9]}
+{"player": 1, "move": [4, 15]}
+{"player": 2, "move": [1, 4]}
+{"player": 1, "move": [14, 16]}
+{"player": 2, "move": [0, 1]}
+{"player": 1, "move": [12, 16]}
+{"player": 2, "move": [10, 15]}
+{"player": 1, "move": [0, 21]}
 {"player": 2, "move": [4, 6]}
-{"player": 1, "move": [3, 4]}
-{"player": 2, "move": [0, 5]}
-{"player": 1, "move": [1, 7]}
-{"player": 2, "move": [6, 5]}
-{"player": 1, "move": [7, 4]}
-Game Over
-Winner: Player 1
-Structure Formed: fork
-Winning Path: [(7, 4), (5, 1), (5, 2), (4, 2), (4, 3), (1, 0), (2, 1), (2, 2), (2, 3), (2, 4), (3, 4), (4, 4), (4, 3), (5, 3), (6, 4), (7, 5)]
-Player 1 Time Remaining: 19.97762680053711 s
-Player 2 Time Remaining: 19.979145050048828 s
+{"player": 1, "move": [0, 14]}
+{"player": 2, "move": [9, 17]}
+{"player": 1, "move": [11, 5]}
+{"player": 2, "move": [4, 12]}
+{"player": 1, "move": [11, 15]}
+{"player": 2, "move": [12, 11]}
+{"player": 1, "move": [13, 9]}
+{"player": 2, "move": [10, 10]}
+{"player": 1, "move": [10, 17]}
+{"player": 2, "move": [17, 11]}
+{"player": 1, "move": [11, 6]}
+{"player": 2, "move": [0, 16]}
+{"player": 1, "move": [2, 13]}
+{"player": 2, "move": [8, 14]}
+{"player": 1, "move": [6, 1]}
+{"player": 2, "move": [3, 5]}
+{"player": 1, "move": [8, 10]}
+{"player": 2, "move": [1, 13]}
+{"player": 1, "move": [8, 0]}
+{"player": 2, "move": [4, 11]}
+{"player": 1, "move": [19, 9]}
+{"player": 2, "move": [6, 18]}
+{"player": 1, "move": [7, 15]}
+{"player": 2, "move": [7, 12]}
+{"player": 1, "move": [2, 3]}
+{"player": 2, "move": [7, 10]}
+{"player": 1, "move": [15, 8]}
+{"player": 2, "move": [6, 15]}
+{"player": 1, "move": [13, 2]}
+{"player": 2, "move": [18, 11]}
+{"player": 1, "move": [13, 4]}
+{"player": 2, "move": [10, 3]}
+{"player": 1, "move": [15, 4]}
+{"player": 2, "move": [20, 12]}
+{"player": 1, "move": [16, 13]}
+{"player": 2, "move": [2, 21]}
+{"player": 1, "move": [13, 16]}
+{"player": 2, "move": [10, 9]}
+{"player": 1, "move": [10, 16]}
+{"player": 2, "move": [12, 6]}
+{"player": 1, "move": [1, 8]}
+{"player": 2, "move": [5, 4]}
+{"player": 1, "move": [0, 19]}
+{"player": 2, "move": [5, 8]}
+{"player": 1, "move": [11, 4]}
+{"player": 2, "move": [4, 1]}
+{"player": 1, "move": [7, 19]}
+{"player": 2, "move": [10, 12]}
+{"player": 1, "move": [22, 11]}
+{"player": 2, "move": [15, 13]}
+{"player": 1, "move": [10, 5]}
+{"player": 2, "move": [10, 11]}
+{"player": 1, "move": [4, 8]}
+{"player": 2, "move": [4, 3]}
+{"player": 1, "move": [0, 9]}
+{"player": 2, "move": [12, 18]}
+{"player": 1, "move": [13, 17]}
+{"player": 2, "move": [18, 7]}
+{"player": 1, "move": [13, 8]}
+{"player": 2, "move": [15, 7]}
+{"player": 1, "move": [20, 10]}
+{"player": 2, "move": [6, 7]}
+{"player": 1, "move": [14, 15]}
+{"player": 2, "move": [11, 12]}
+{"player": 1, "move": [7, 0]}
+{"player": 2, "move": [5, 10]}
+{"player": 1, "move": [17, 12]}
+{"player": 2, "move": [4, 10]}
+{"player": 1, "move": [11, 21]}
+{"player": 2, "move": [10, 6]}
+{"player": 1, "move": [6, 3]}
+{"player": 2, "move": [1, 7]}
