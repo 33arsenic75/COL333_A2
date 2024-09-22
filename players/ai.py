@@ -25,8 +25,19 @@ class AIPlayer:
         self.timer = timer
         self.C = 1.2  # Exploration constant for UCT
 
-    def get_move(self, state: np.array) -> Tuple[int, int]:        
+    def get_move(self, state: np.array) -> Tuple[int, int]:  
         valid_moves = self.get_valid_moves(state)
+        
+        # Define frames for initial moves
+        center = (state.shape[0] // 2, state.shape[1] // 2)
+        frames = self.get_frame_cells(center[0], center[1])
+        
+        # Prioritize frame positions for the first few moves
+        if np.count_nonzero(np.isin(state, [1, 2])) < len(frames):
+            for frame in frames:
+                if state[frame] == 0:
+                    return frame
+        
         for move in valid_moves:
             me_win, _ = check_win(state, move, self.player_number)
             opp_win, _ = check_win(state, move, 3 - self.player_number)
@@ -34,12 +45,11 @@ class AIPlayer:
                 return move
             elif opp_win:
                 return move
-        if state.shape[0] > 10 or state.shape[1] > 10:
-            # Play randomly for the first few moves if the board size is greater than 10
-            if np.count_nonzero(state) < 20:  # Adjust the number of moves as needed
+            
+        if state.shape[0] > 20 or state.shape[1] > 20:
+            if np.count_nonzero(np.isin(state, [1, 2])) < 3 * state.shape[0]:
                 return random.choice(self.get_valid_moves(state))
             
-        # return self.random_move(state)
         return self.mcts(state)
 
     def get_valid_moves(self, state: np.array) -> List[Tuple[int, int]]:
@@ -59,11 +69,27 @@ class AIPlayer:
                     valid_moves.append((row, col))
         return valid_moves
 
+    def get_frame_cells(self, i: int, j: int) -> List[Tuple[int, int]]:
+        return [
+            (i - 1, j - 2), (i - 1, j + 2), (i + 1, j - 2), (i + 1, j + 2),
+            (i - 2, j - 1), (i - 2, j + 1), (i + 2, j - 1), (i + 2, j + 1)
+        ]
+
+    def mcts_iterations(self, state: np.array) -> int:
+        time_sec = fetch_remaining_time(self.timer, self.player_number)
+        remaining_moves = np.count_nonzero(state == 0)
+        base_iterations = 1000
+        time_factor = int(200 * time_sec)
+        move_factor = int(remaining_moves * 10)  # Adjust the multiplier as needed
+        return max(base_iterations, min(time_factor, move_factor))
+
     def mcts(self, state: np.array) -> Tuple[int, int]:
         root = Node(state, None, None)
         self.visits = {root: 0}
         self.wins = {root: 0}
-        for _ in range(1000):  # Number of iterations
+        iterations = self.mcts_iterations(state)
+        # print(f"Iterations: {iterations}")
+        for _ in range(iterations):  # Number of iterations
             node = self.select(root)
             if node is None:
                 continue
@@ -76,15 +102,18 @@ class AIPlayer:
 
     def select(self, node):
         # UCT selection strategy
+        beta = 0.5  # Define beta with an appropriate value
         best_value = -float('inf')
         best_node = None
-        for child in node.children:
+        for child in node.children:  # Iterate directly over the list
             if child not in self.visits:
                 return child
             uct_value = (self.wins[child] / self.visits[child]) + \
                         self.C * np.sqrt(np.log(self.visits[node]) / self.visits[child])
-            if uct_value > best_value:
-                best_value = uct_value
+            rave_value = child.rave_wins / (child.rave_visits + 1)
+            combined_value = beta * child.value + (1 - beta) * rave_value
+            if combined_value > best_value:
+                best_value = combined_value
                 best_node = child
         return best_node
 
@@ -125,6 +154,8 @@ class Node:
         self.move = move
         self.parent = parent
         self.children = []
+        self.rave_wins = 0  # RAVE wins
+        self.rave_visits = 0  # RAVE visits
         
     def __hash__(self):
         return hash(str(self.state.tostring()) + str(self.move))

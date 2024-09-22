@@ -17,16 +17,18 @@ else:
 # Ensure the DataFrame has a row for the current game size
 def help(size, time):
     global existing_df  # Declare existing_df as global
+    if (existing_df.loc[existing_df["size"] == size, "time"] == time).any():
+        return
     new_row = pd.DataFrame([{"size": size, "time": time, "wins": 0, "games_played": 0, "percent_wins": 0}])
     existing_df = pd.concat([existing_df, new_row], ignore_index=True)
 
 
 def analyze_game(iterations = 1000, size = 5, time = 20):
     global existing_df  # Declare existing_df as global
-    command = f"python3 game.py ai random --dim {size} --time {time} --mode server"
+    command = f"python3 game.py ai2 ai --dim {size} --time {time} --mode server"
     help(size, time)
     win = 0
-    # Run the command 1000 times
+    played = 0
     for iter in range(iterations):
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
         winner = 0
@@ -35,12 +37,13 @@ def analyze_game(iterations = 1000, size = 5, time = 20):
         except:
             winner = 0
         print(f"size: {size}, winner: {winner}, iter: {iter}")
-        
-        # Update the DataFrame with the new result
         if winner == 1:
             win += 1
+        if winner != 0:
+            played += 1
+
     existing_df.loc[existing_df["size"] == size, "wins"] += win
-    existing_df.loc[existing_df["size"] == size, "games_played"] += iterations
+    existing_df.loc[existing_df["size"] == size, "games_played"] += played
         
 def update_csv():
     global existing_df  # Declare existing_df as global
@@ -52,9 +55,9 @@ def update_csv():
     existing_df.to_csv(csv_file, index=False)
 
 start = time.time()
-for i in range(11, 13):
-    for j in range(3*i, 3*i+1):
-        analyze_game(iterations=100, size=i, time=j)
+for i in range(5, 10):
+    for j in range(41, 42):
+        analyze_game(iterations=500, size=i, time=j)
         # Save the updated DataFrame to the CSV file after each run
     update_csv()
 end = time.time()
