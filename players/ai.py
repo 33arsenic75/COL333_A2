@@ -4,7 +4,7 @@ import random
 import numpy as np
 from helper import *
 from typing import Optional, Set, Tuple, List  # Add List to the import statement
-from helper import check_win
+from helper import *
 
 class AIPlayer:
 
@@ -26,17 +26,17 @@ class AIPlayer:
         self.C = 1.2  # Exploration constant for UCT
 
     def get_move(self, state: np.array) -> Tuple[int, int]:  
-        valid_moves = self.get_valid_moves(state)
+        valid_moves = get_valid_actions(state)
         
         # Define frames for initial moves
         center = (state.shape[0] // 2, state.shape[1] // 2)
-        frames = self.get_frame_cells(center[0], center[1])
+        frames = self.get_frame_cells(center[0], center[1], state)
         
         # Prioritize frame positions for the first few moves
-        if np.count_nonzero(np.isin(state, [1, 2])) < len(frames):
-            for frame in frames:
-                if state[frame] == 0:
-                    return frame
+        if np.count_nonzero(np.isin(state, [1, 2])) < state.shape[0]//2:
+            if center in frames:
+                return center
+            return random.choice(frames)
         
         for move in valid_moves:
             me_win, _ = check_win(state, move, self.player_number)
@@ -45,35 +45,20 @@ class AIPlayer:
                 return move
             elif opp_win:
                 return move
-            
+        
         if state.shape[0] > 20 or state.shape[1] > 20:
             if np.count_nonzero(np.isin(state, [1, 2])) < 3 * state.shape[0]:
-                return random.choice(self.get_valid_moves(state))
+                return random.choice(get_valid_actions(state))
             
         return self.mcts(state)
 
-    def get_valid_moves(self, state: np.array) -> List[Tuple[int, int]]:
-        """
-        Get all valid moves for the current state.
 
-        # Parameters
-        `state (np.array)`: The current state of the game board
-
-        # Returns
-        `List[Tuple[int, int]]`: A list of valid moves (row, column)
-        """
-        valid_moves = []
-        for row in range(state.shape[0]):
-            for col in range(state.shape[1]):
-                if state[row, col] == 0:  # Assuming 0 represents an empty cell
-                    valid_moves.append((row, col))
-        return valid_moves
-
-    def get_frame_cells(self, i: int, j: int) -> List[Tuple[int, int]]:
-        return [
+    def get_frame_cells(self, i: int, j: int, state: np.array) -> List[Tuple[int, int]]:
+        frames = [
             (i - 1, j - 2), (i - 1, j + 2), (i + 1, j - 2), (i + 1, j + 2),
-            (i - 2, j - 1), (i - 2, j + 1), (i + 2, j - 1), (i + 2, j + 1)
+            (i - 2, j - 1), (i - 2, j + 1), (i + 2, j - 1), (i + 2, j + 1), (i, j)
         ]
+        return [frame for frame in frames if state[frame] == 0]
 
     def mcts_iterations(self, state: np.array) -> int:
         time_sec = fetch_remaining_time(self.timer, self.player_number)
@@ -97,7 +82,7 @@ class AIPlayer:
             result = self.simulate(node)
             self.backpropagate(node, result)
         if not root.children:
-            return random.choice(self.get_valid_moves(state))  # Fallback to a random move if no children
+            return random.choice(get_valid_actions(state))  # Fallback to a random move if no children
         return max(root.children, key=lambda n: self.visits.get(n, 0)).move
 
     def select(self, node):
@@ -118,7 +103,7 @@ class AIPlayer:
         return best_node
 
     def expand(self, node):
-        valid_moves = self.get_valid_moves(node.state)
+        valid_moves = get_valid_actions(node.state)
         for move in valid_moves:
             new_state = node.state.copy()
             new_state[move] = self.player_number
@@ -129,7 +114,7 @@ class AIPlayer:
         current_state = node.state.copy()
         current_player = self.player_number
         while True:
-            valid_moves = self.get_valid_moves(current_state)
+            valid_moves = get_valid_actions(current_state)
             if not valid_moves:
                 return 0  # Draw
             move = random.choice(valid_moves)

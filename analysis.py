@@ -25,7 +25,7 @@ def help(size, time):
 
 def analyze_game(iterations = 1000, size = 5, time = 20):
     global existing_df  # Declare existing_df as global
-    command = f"python3 game.py ai2 ai --dim {size} --time {time} --mode server"
+    command = f"python3 game.py ai random --dim {size} --time {time} --mode server"
     help(size, time)
     win = 0
     played = 0
@@ -55,9 +55,9 @@ def update_csv():
     existing_df.to_csv(csv_file, index=False)
 
 start = time.time()
-for i in range(5, 10):
-    for j in range(41, 42):
-        analyze_game(iterations=500, size=i, time=j)
+for i in range(10, 11):
+    for j in range(300, 301):
+        analyze_game(iterations=20, size=i, time=j)
         # Save the updated DataFrame to the CSV file after each run
     update_csv()
 end = time.time()
