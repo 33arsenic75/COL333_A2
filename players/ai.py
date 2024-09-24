@@ -23,21 +23,12 @@ class AIPlayer:
         self.type = 'ai'
         self.player_string = 'Player {}: ai'.format(player_number)
         self.timer = timer
-        self.C = 1.2  # Exploration constant for UCT
+        self.C = np.sqrt(2)
+        self.p = 1  # Initial probability for making a frame move
+        self.total_moves = 0  # Track the total number of moves made
 
     def get_move(self, state: np.array) -> Tuple[int, int]:  
         valid_moves = get_valid_actions(state)
-        
-        # Define frames for initial moves
-        center = (state.shape[0] // 2, state.shape[1] // 2)
-        frames = self.get_frame_cells(center[0], center[1], state)
-        
-        # Prioritize frame positions for the first few moves
-        if np.count_nonzero(np.isin(state, [1, 2])) < state.shape[0]//2:
-            if center in frames:
-                return center
-            return random.choice(frames)
-        
         for move in valid_moves:
             me_win, _ = check_win(state, move, self.player_number)
             opp_win, _ = check_win(state, move, 3 - self.player_number)
@@ -45,11 +36,20 @@ class AIPlayer:
                 return move
             elif opp_win:
                 return move
+        center = (state.shape[0] // 2, state.shape[1] // 2)
+        if state[center] == 0:
+            return center
+        self.update_probability(state=state)
+        frames = []
+        for i in range(state.shape[0]):
+            for j in range(state.shape[1]):
+                if state[i, j] == self.player_number:
+                    frames.extend(self.get_frame_cells(i, j, state))
         
-        if state.shape[0] > 20 or state.shape[1] > 20:
-            if np.count_nonzero(np.isin(state, [1, 2])) < 3 * state.shape[0]:
-                return random.choice(get_valid_actions(state))
-            
+        frames = list(set(frames))  
+        if random.random() < self.p and frames:
+            return random.choice(frames)
+        
         return self.mcts(state)
 
 
@@ -58,7 +58,23 @@ class AIPlayer:
             (i - 1, j - 2), (i - 1, j + 2), (i + 1, j - 2), (i + 1, j + 2),
             (i - 2, j - 1), (i - 2, j + 1), (i + 2, j - 1), (i + 2, j + 1), (i, j)
         ]
-        return [frame for frame in frames if state[frame] == 0]
+        return [frame for frame in frames if 0 <= frame[0] < state.shape[0] and 0 <= frame[1] < state.shape[1] and state[frame] == 0]
+
+    def update_probability(self, state: np.array):
+        
+        self.total_moves += 1
+        board_size = state.shape[0]
+        
+        small_board_decay = 0.9500
+        large_board_decay = 0.9999
+        
+        min_board_size = 5 
+        max_board_size = 40
+        decay_factor = small_board_decay + (large_board_decay - small_board_decay) * ((board_size - min_board_size) / (max_board_size - min_board_size))
+        
+        decay_factor = max(small_board_decay, min(large_board_decay, decay_factor))  # Clamp to range
+        
+        self.p = max(0.01, self.p * decay_factor)  # Apply decay factor
 
     def mcts_iterations(self, state: np.array) -> int:
         time_sec = fetch_remaining_time(self.timer, self.player_number)
