@@ -6,6 +6,7 @@ from helper import *
 from typing import Optional, Set, Tuple, List  # Add List to the import statement
 from helper import check_win
 
+
 class AIPlayer:
 
     def __init__(self, player_number: int, timer):
@@ -14,18 +15,18 @@ class AIPlayer:
 
         # Parameters
         `player_number (int)`: Current player number, num==1 starts the game
-        
+
         `timer: Timer`
             - a Timer object that can be used to fetch the remaining time for any player
             - Run `fetch_remaining_time(timer, player_number)` to fetch remaining time of a player
         """
         self.player_number = player_number
-        self.type = 'ai'
-        self.player_string = 'Player {}: ai'.format(player_number)
+        self.type = "ai"
+        self.player_string = "Player {}: ai".format(player_number)
         self.timer = timer
         self.C = 1.2  # Exploration constant for UCT
 
-    def get_move(self, state: np.array) -> Tuple[int, int]:  
+    def get_move(self, state: np.array) -> Tuple[int, int]:
         valid_moves = self.get_valid_moves(state)
         for move in valid_moves:
             me_win, _ = check_win(state, move, self.player_number)
@@ -36,9 +37,11 @@ class AIPlayer:
                 return move
         if state.shape[0] > 20 or state.shape[1] > 20:
             # Play randomly for the first few moves if the board size is greater than 10
-            if np.count_nonzero(np.isin(state, [1, 2])) < 3*state.shape[0]:  # Adjust the number of moves as needed
+            if (
+                np.count_nonzero(np.isin(state, [1, 2])) < 3 * state.shape[0]
+            ):  # Adjust the number of moves as needed
                 return random.choice(self.get_valid_moves(state))
-            
+
         # return self.random_move(state)
         return self.mcts(state)
 
@@ -81,19 +84,22 @@ class AIPlayer:
             result = self.simulate(node)
             self.backpropagate(node, result)
         if not root.children:
-            return random.choice(self.get_valid_moves(state))  # Fallback to a random move if no children
+            return random.choice(
+                self.get_valid_moves(state)
+            )  # Fallback to a random move if no children
         return max(root.children, key=lambda n: self.visits.get(n, 0)).move
 
     def select(self, node):
         # UCT selection strategy
         beta = 0.5  # Define beta with an appropriate value
-        best_value = -float('inf')
+        best_value = -float("inf")
         best_node = None
         for child in node.children:  # Iterate directly over the list
             if child not in self.visits:
                 return child
-            uct_value = (self.wins[child] / self.visits[child]) + \
-                        self.C * np.sqrt(np.log(self.visits[node]) / self.visits[child])
+            uct_value = (self.wins[child] / self.visits[child]) + self.C * np.sqrt(
+                np.log(self.visits[node]) / self.visits[child]
+            )
             rave_value = child.rave_wins / (child.rave_visits + 1)
             combined_value = beta * child.value + (1 - beta) * rave_value
             if combined_value > best_value:
@@ -132,6 +138,7 @@ class AIPlayer:
             node = node.parent
             result = -result
 
+
 class Node:
     def __init__(self, state, move, parent):
         self.state = state
@@ -140,9 +147,13 @@ class Node:
         self.children = []
         self.rave_wins = 0  # RAVE wins
         self.rave_visits = 0  # RAVE visits
-        
+
     def __hash__(self):
         return hash(str(self.state.tostring()) + str(self.move))
-    
+
     def __eq__(self, other):
-        return isinstance(other, Node) and np.array_equal(self.state, other.state) and self.move == other.move
+        return (
+            isinstance(other, Node)
+            and np.array_equal(self.state, other.state)
+            and self.move == other.move
+        )

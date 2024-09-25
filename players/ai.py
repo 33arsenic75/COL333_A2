@@ -6,6 +6,7 @@ from helper import *
 from typing import Optional, Set, Tuple, List  # Add List to the import statement
 from helper import *
 
+
 class AIPlayer:
 
     def __init__(self, player_number: int, timer):
@@ -14,20 +15,20 @@ class AIPlayer:
 
         # Parameters
         `player_number (int)`: Current player number, num==1 starts the game
-        
+
         `timer: Timer`
             - a Timer object that can be used to fetch the remaining time for any player
             - Run `fetch_remaining_time(timer, player_number)` to fetch remaining time of a player
         """
         self.player_number = player_number
-        self.type = 'ai'
-        self.player_string = 'Player {}: ai'.format(player_number)
+        self.type = "ai"
+        self.player_string = "Player {}: ai".format(player_number)
         self.timer = timer
         self.C = np.sqrt(2)
         self.p = 1  # Initial probability for making a frame move
         self.total_moves = 0  # Track the total number of moves made
 
-    def get_move(self, state: np.array) -> Tuple[int, int]:  
+    def get_move(self, state: np.array) -> Tuple[int, int]:
         valid_moves = get_valid_actions(state)
         for move in valid_moves:
             me_win, _ = check_win(state, move, self.player_number)
@@ -45,35 +46,51 @@ class AIPlayer:
             for j in range(state.shape[1]):
                 if state[i, j] == self.player_number:
                     frames.extend(self.get_frame_cells(i, j, state))
-        
-        frames = list(set(frames))  
+
+        frames = list(set(frames))
         if random.random() < self.p and frames:
             return random.choice(frames)
-        
-        return self.mcts(state)
 
+        return self.mcts(state)
 
     def get_frame_cells(self, i: int, j: int, state: np.array) -> List[Tuple[int, int]]:
         frames = [
-            (i - 1, j - 2), (i - 1, j + 2), (i + 1, j - 2), (i + 1, j + 2),
-            (i - 2, j - 1), (i - 2, j + 1), (i + 2, j - 1), (i + 2, j + 1), (i, j)
+            (i - 1, j - 2),
+            (i - 1, j + 2),
+            (i + 1, j - 2),
+            (i + 1, j + 2),
+            (i - 2, j - 1),
+            (i - 2, j + 1),
+            (i + 2, j - 1),
+            (i + 2, j + 1),
+            (i, j),
         ]
-        return [frame for frame in frames if 0 <= frame[0] < state.shape[0] and 0 <= frame[1] < state.shape[1] and state[frame] == 0]
+        return [
+            frame
+            for frame in frames
+            if 0 <= frame[0] < state.shape[0]
+            and 0 <= frame[1] < state.shape[1]
+            and state[frame] == 0
+        ]
 
     def update_probability(self, state: np.array):
-        
+
         self.total_moves += 1
         board_size = state.shape[0]
-        
+
         small_board_decay = 0.9500
         large_board_decay = 0.9999
-        
-        min_board_size = 5 
+
+        min_board_size = 5
         max_board_size = 40
-        decay_factor = small_board_decay + (large_board_decay - small_board_decay) * ((board_size - min_board_size) / (max_board_size - min_board_size))
-        
-        decay_factor = max(small_board_decay, min(large_board_decay, decay_factor))  # Clamp to range
-        
+        decay_factor = small_board_decay + (large_board_decay - small_board_decay) * (
+            (board_size - min_board_size) / (max_board_size - min_board_size)
+        )
+
+        decay_factor = max(
+            small_board_decay, min(large_board_decay, decay_factor)
+        )  # Clamp to range
+
         self.p = max(0.01, self.p * decay_factor)  # Apply decay factor
 
     def mcts_iterations(self, state: np.array) -> int:
@@ -98,19 +115,22 @@ class AIPlayer:
             result = self.simulate(node)
             self.backpropagate(node, result)
         if not root.children:
-            return random.choice(get_valid_actions(state))  # Fallback to a random move if no children
+            return random.choice(
+                get_valid_actions(state)
+            )  # Fallback to a random move if no children
         return max(root.children, key=lambda n: self.visits.get(n, 0)).move
 
     def select(self, node):
         # UCT selection strategy
         beta = 0.5  # Define beta with an appropriate value
-        best_value = -float('inf')
+        best_value = -float("inf")
         best_node = None
         for child in node.children:  # Iterate directly over the list
             if child not in self.visits:
                 return child
-            uct_value = (self.wins[child] / self.visits[child]) + \
-                        self.C * np.sqrt(np.log(self.visits[node]) / self.visits[child])
+            uct_value = (self.wins[child] / self.visits[child]) + self.C * np.sqrt(
+                np.log(self.visits[node]) / self.visits[child]
+            )
             rave_value = child.rave_wins / (child.rave_visits + 1)
             combined_value = beta * child.value + (1 - beta) * rave_value
             if combined_value > best_value:
@@ -149,6 +169,7 @@ class AIPlayer:
             node = node.parent
             result = -result
 
+
 class Node:
     def __init__(self, state, move, parent):
         self.state = state
@@ -157,9 +178,13 @@ class Node:
         self.children = []
         self.rave_wins = 0  # RAVE wins
         self.rave_visits = 0  # RAVE visits
-        
+
     def __hash__(self):
         return hash(str(self.state.tostring()) + str(self.move))
-    
+
     def __eq__(self, other):
-        return isinstance(other, Node) and np.array_equal(self.state, other.state) and self.move == other.move
+        return (
+            isinstance(other, Node)
+            and np.array_equal(self.state, other.state)
+            and self.move == other.move
+        )

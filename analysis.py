@@ -4,7 +4,7 @@ import os
 import time
 
 # Define the CSV file path
-csv_file = "game_results.csv"
+csv_file = "game_results9.csv"
 
 # Check if the CSV file exists
 if os.path.exists(csv_file):
@@ -12,18 +12,23 @@ if os.path.exists(csv_file):
     existing_df = pd.read_csv(csv_file)
 else:
     # Create an empty DataFrame with the required columns if the file does not exist
-    existing_df = pd.DataFrame(columns=["size", "time","wins", "games_played", "percent_wins"])
+    existing_df = pd.DataFrame(
+        columns=["size", "time", "wins", "games_played", "percent_wins"]
+    )
+
 
 # Ensure the DataFrame has a row for the current game size
 def help(size, time):
     global existing_df  # Declare existing_df as global
     if (existing_df.loc[existing_df["size"] == size, "time"] == time).any():
         return
-    new_row = pd.DataFrame([{"size": size, "time": time, "wins": 0, "games_played": 0, "percent_wins": 0}])
+    new_row = pd.DataFrame(
+        [{"size": size, "time": time, "wins": 0, "games_played": 0, "percent_wins": 0}]
+    )
     existing_df = pd.concat([existing_df, new_row], ignore_index=True)
 
 
-def analyze_game(iterations = 1000, size = 5, time = 20):
+def analyze_game(iterations=1000, size=5, time=20):
     global existing_df  # Declare existing_df as global
     command = f"python3 game.py ai ai2 --dim {size} --time {time} --mode server"
     help(size, time)
@@ -44,7 +49,8 @@ def analyze_game(iterations = 1000, size = 5, time = 20):
 
     existing_df.loc[existing_df["size"] == size, "wins"] += win
     existing_df.loc[existing_df["size"] == size, "games_played"] += played
-        
+
+
 def update_csv():
     global existing_df  # Declare existing_df as global
     for index, row in existing_df.iterrows():
@@ -54,13 +60,12 @@ def update_csv():
             existing_df.at[index, "percent_wins"] = 0
     existing_df.to_csv(csv_file, index=False)
 
+
 start = time.time()
 for i in range(5, 15):
     for j in range(50, 51):
-        analyze_game(iterations=25, size=i, time=j)
+        analyze_game(iterations=100, size=i, time=j)
         # Save the updated DataFrame to the CSV file after each run
     update_csv()
 end = time.time()
 print(end - start)
-
-
