@@ -4,7 +4,7 @@ import os
 import time
 
 # Define the CSV file path
-csv_file = "game_results10.csv"
+csv_file = "game_results11.csv"
 
 # Check if the CSV file exists
 if os.path.exists(csv_file):
@@ -62,9 +62,9 @@ def update_csv():
 
 
 start = time.time()
-for i in range(5, 15):
-    for j in range(50, 51):
-        analyze_game(iterations=200, size=i, time=j)
+for i in range(15, 41, 5):
+    for j in range(100, 101):
+        analyze_game(iterations=50, size=i, time=j)
         # Save the updated DataFrame to the CSV file after each run
     update_csv()
 end = time.time()
