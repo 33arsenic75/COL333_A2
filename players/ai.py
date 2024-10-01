@@ -24,7 +24,7 @@ class AIPlayer:
         self.type = "ai"
         self.player_string = "Player {}: ai".format(player_number)
         self.timer = timer
-        self.C = np.sqrt(2)
+        self.C = 1.5
         self.p = 1  # Initial probability for making a frame move
         self.total_moves = 0  # Track the total number of moves made
 
@@ -77,28 +77,41 @@ class AIPlayer:
 
         self.total_moves += 1
         board_size = state.shape[0]
+        decay_factor = 0
 
-        small_board_decay = 0.9500
-        large_board_decay = 0.9999
+        if board_size == 4:
+            decay_factor = 0.87
+        elif board_size == 6:
+            decay_factor = 0.96
 
-        min_board_size = 5
-        max_board_size = 40
-        decay_factor = small_board_decay + (large_board_decay - small_board_decay) * (
-            (board_size - min_board_size) / (max_board_size - min_board_size)
-        )
+        # small_board_decay = 0.9500
+        # large_board_decay = 0.9999
 
-        decay_factor = max(
-            small_board_decay, min(large_board_decay, decay_factor)
-        )  # Clamp to range
+        # min_board_size = 4
+        # max_board_size = 40
+        # decay_factor = small_board_decay + (large_board_decay - small_board_decay) * (
+        #     (board_size - min_board_size) / (max_board_size - min_board_size)
+        # )
+
+        # decay_factor = max(
+        #     small_board_decay, min(large_board_decay, decay_factor)
+        # )  # Clamp to range
 
         self.p = max(0.01, self.p * decay_factor)  # Apply decay factor
 
     def mcts_iterations(self, state: np.array) -> int:
         time_sec = fetch_remaining_time(self.timer, self.player_number)
+        board_size = state.shape[0]
         remaining_moves = np.count_nonzero(state == 0)
-        base_iterations = 1000
+        base_iterations = 1050
+        if board_size == 6:
+            base_iterations = 5000
         time_factor = int(200 * time_sec)
+        if board_size == 6:
+            time_factor = int(400 * time_sec)
         move_factor = int(remaining_moves * 10)  # Adjust the multiplier as needed
+        if board_size == 6:
+            move_factor = int(remaining_moves * 15)
         return max(base_iterations, min(time_factor, move_factor))
 
     def mcts(self, state: np.array) -> Tuple[int, int]:
@@ -132,7 +145,9 @@ class AIPlayer:
                 np.log(self.visits[node]) / self.visits[child]
             )
             rave_value = child.rave_wins / (child.rave_visits + 1)
-            combined_value = beta * uct_value + (1 - beta) * rave_value  # Use uct_value here
+            combined_value = (
+                beta * uct_value + (1 - beta) * rave_value
+            )  # Use uct_value here
             if combined_value > best_value:
                 best_value = combined_value
                 best_node = child

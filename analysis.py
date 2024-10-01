@@ -4,7 +4,7 @@ import os
 import time
 
 # Define the CSV file path
-csv_file = "game_results11.csv"
+csv_file = "game_results40.csv"
 
 # Check if the CSV file exists
 if os.path.exists(csv_file):
@@ -28,7 +28,7 @@ def help(size, time):
     existing_df = pd.concat([existing_df, new_row], ignore_index=True)
 
 
-def analyze_game(iterations=1000, size=5, time=20):
+def analyze_game(iterations, size, time):
     global existing_df  # Declare existing_df as global
     command = f"python3 game.py ai ai2 --dim {size} --time {time} --mode server"
     help(size, time)
@@ -62,9 +62,9 @@ def update_csv():
 
 
 start = time.time()
-for i in range(15, 41, 5):
-    for j in range(100, 101):
-        analyze_game(iterations=50, size=i, time=j)
+for i in range(6, 7):
+    for j in range(480, 481):
+        analyze_game(iterations=1000, size=i, time=j)
         # Save the updated DataFrame to the CSV file after each run
     update_csv()
 end = time.time()
