@@ -4,7 +4,7 @@ import os
 import time
 
 # Define the CSV file path
-csv_file = "game_results40.csv"
+csv_file = "game_results42.csv"
 
 # Check if the CSV file exists
 if os.path.exists(csv_file):

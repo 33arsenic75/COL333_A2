@@ -101,7 +101,7 @@ class AIPlayer:
                 np.log(self.visits[node]) / self.visits[child]
             )
             rave_value = child.rave_wins / (child.rave_visits + 1)
-            combined_value = beta * child.value + (1 - beta) * rave_value
+            combined_value = beta * uct_value + (1 - beta) * rave_value
             if combined_value > best_value:
                 best_value = combined_value
                 best_node = child
